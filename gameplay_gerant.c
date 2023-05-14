@@ -13,8 +13,16 @@ int main() {
     }
     if(strcmp(tab,"oui")){
       printf("What is the brand of the car you want to add ?\n");
-      verif=scanf("%s"& STOCK DE LA VOITURE);
-      gros caca
+      verif=scanf("%s",& STOCK DE LA VOITURE);
+      printf("What is the model of the car ?\n");
+      verif=scanf("%s",& STOCK DE LA VOITURE);
+      printf("How many car do you want do command ?\n");
+	  verif=scanf("%d",& STOCK DE LA VOITURE);
+      while((verif!=1)&&(& STOCK DE LA VOITURE<1)(& STOCK DE LA VOITURE>50)){  //50 valeur arbitraire
+        printf("You have to enter a number between 1 and 50\n");
+        printf("How many car do you want do command ?\n");
+        verif=scanf("%d"& STOCK DE LA VOITURE);
+      }
     }
     printf("How ");
     verif=scanf("%s\n");
