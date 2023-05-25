@@ -1,0 +1,14 @@
+Brand: Renault
+Model: Clio
+Reference: 201
+Price: 20000.00
+Size: 2
+Quantity: 2
+
+Brand: Peugeot
+Model: 208
+Reference: 202
+Price: 22000.00
+Size: 2
+Quantity: 2
+
