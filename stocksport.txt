@@ -1,0 +1,14 @@
+Brand: Audi
+Model: R8
+Reference: 1
+Price: 150000.00
+Size: 1
+Quantity: 2
+
+Brand: BMW
+Model: M4
+Reference: 2
+Price: 130000.00
+Size: 1
+Quantity: 2
+
