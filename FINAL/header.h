@@ -42,7 +42,7 @@ typedef struct{
   void printArrayInt(int* tab);
   void buffer();
   void createClient(Client client);
-  int yes_no(char* answer,int verif);
+  int yes_no(char* answer);
   void showCars(Car* cars, int numCars);
   void print_stock(Car* stock, int size);
   void save_stock(Car* stock, int size, const char* stocktxt);

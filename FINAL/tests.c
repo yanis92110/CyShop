@@ -1,4 +1,5 @@
 #include "header.h"
+#include <ncurses.h>
 
 
 //FICHIER POUR TESTER LES CONDITIONS ET FONCTIONS
@@ -57,16 +58,22 @@ void clearTerminal() {
   }
 void createClient(Client client) {
   //Fonction qui créer un client, son "fichier client" et son historique
+  initscr();
+  clear();
+  echo();
+  cbreak();
   char filename[50];
 
   clearTerminal();
 
   printw("Enter your name: \n");
+  refresh();
   scanw("%s", client.name);
 
   clearTerminal();
 
   printw("Enter your surname: \n");
+  refresh();
   scanw("%s", client.surname);
 
   clearTerminal();
@@ -99,33 +106,34 @@ void createClient(Client client) {
     printw("Error creating historic file.\n");
   }
   clearTerminal();
+  endwin();
 }
 
-int yes_no(char* answer,int verif){
-  //Fonction qui demande a l'utilisateur de repondre oui ou non, renvoie 1 si la reponse est oui et renvoie 0 si la reponse est non
-  printw("Enter 'yes' or 'no': \n");
-  printw("  ->  ");
-  verif = scanw("%s",answer);
-  buffer();
-  convertMin(answer);
-  if (verif == 1 && (strcmp(answer,"yes") == 0  || (strcmp(answer,"no") == 0))){
-  //Si la chaine entrée est bien stockée dans la variable answer et qu'elle est égale a yes ou no
-  }
-  else {
-    //Si non
-    do {
-      printw("Please, answer us correctly... (enter 'yes' or 'no') \n");
-      printw("  ->  ");
-      verif = scanw("%s",answer);
-      buffer();
-    } while (verif != 1 || (strcmp(answer,"yes") != 0 && strcmp(answer,"no") != 0));
-  }
-  if (strcmp(answer,"yes") == 0){
-    return 1;
-  }
-  else {
-    return 0;
-  }
+int yes_no(char* answer) {
+    int verif;
+
+    printw("Enter 'yes' or 'no': \n");
+    printw("  ->  ");
+    refresh();
+    verif = scanw("%s", answer);
+    clear();
+
+    convertMin(answer);
+
+    if (verif == 1 && (strcmp(answer, "yes") == 0 || strcmp(answer, "no") == 0)) {
+    } 
+    else {
+        do {
+            printw("Please, answer us correctly... (enter 'yes' or 'no') \n");
+            printw("  ->  ");
+            refresh();
+            verif = scanw("%s", answer);
+            convertMin(answer);
+            clear();
+        } while (verif != 1 || (strcmp(answer, "yes") != 0 && strcmp(answer, "no") != 0));
+
+        return strcmp(answer, "yes") == 0 ? 1 : 0;
+    }
 }
 void showCars(Car* cars, int numCars) {
   //Fonction quk affiche les voitures du stock
@@ -193,48 +201,62 @@ void load_stock(Car* stock, int* size, const char* stocktxt) {
 }
 void new_car(Car* stock, int* size, int tempsize) {
   //Fonction qui ajoute une nouvelle voiture au stock
+    initscr();
+    clear();
+    echo();
+    cbreak();
     int verif = 0;
     Car a;
 
     printw("Enter the name of the brand: \n");
+    refresh();
     verif = scanw("%s", a.brand);
     while (verif !=1){
       printw("Enter the name of the brand: \n");
+      refresh();
       verif = scanw("%s", a.brand);
     }
     printw("Enter the name of the model: \n");
+    refresh();
     verif=scanw("%s", a.model);
     while (verif !=1){
       printw("Enter the name of the model: \n");
+      refresh();
       verif=scanw("%s", a.model);
     }
   if (tempsize == 0){
     //Si le modele entré est une sportive
     printw("Enter the reference of the product: \n");
+    refresh();
     verif = scanw("%d", &a.reference);
     while (verif != 1 || a.reference < 1 || a.reference > 99 ) {
         printw("The reference has to be between 1 and 99 inclusive.\n");
         printw("Enter the reference: \n");
+        refresh();
         verif = scanw("%d", &a.reference);
     }
     }
     if (tempsize == 2){
     //Si le modele entré est un SUV
     printw("Enter the reference of the product: \n");
+    refresh();
     verif = scanw("%d", &a.reference);
     while (verif != 1 || a.reference < 101 || a.reference > 199 ) {
         printw("The reference has to be between 101 and 199 inclusive.\n");
         printw("Enter the reference: \n");
+        refresh();
         verif = scanw("%d", &a.reference);
     }
     }
     if (tempsize == 1){
     //Si le modele entré est une voiture de ville
     printw("Enter the reference of the product: \n");
+    refresh();
     verif = scanw("%d", &a.reference);
     while (verif != 1 || a.reference < 201 || a.reference > 299 ) {
         printw("The reference has to be between 201 and 299 inclusive.\n");
         printw("Enter the reference: \n");
+        refresh();
         verif = scanw("%d", &a.reference);
     }
     }
@@ -242,20 +264,24 @@ void new_car(Car* stock, int* size, int tempsize) {
     verif = 0;
 
     printw("Enter the quantity to add: \n");
+    refresh();
     verif = scanw("%d", &a.quantity);
     while (verif != 1 || a.quantity < 1 || a.quantity > 15) {
         printw("The quantity has to be between 1 and 15\n");
         printw("Enter the quantity to add: \n");
+        refresh();
         verif = scanw("%d", &a.quantity);
     }
 
     verif = 0;
     
     printw("How much does the car cost?\n");
+    refresh();
     verif = scanw("%f", &a.price);
     while (verif != 1 || a.price < 500) {
         printw("Too cheap! The car must cost at least 500€\n");
         printw("How much does the car cost?\n");
+        refresh();
         verif = scanw("%f", &a.price);
     }
 
@@ -311,6 +337,7 @@ void new_car(Car* stock, int* size, int tempsize) {
     }
 
     printw("Car(s) added to the stock.\n");
+    endwin();
 }
 
 /*
@@ -342,15 +369,21 @@ void printCurrentDate() {
     printw("Today's date is: %s\n", buffer);
 }
 void delete_car(Car* stock, int size, const char* stocktxt){
+    initscr();
+    clear();
+    echo();
+    cbreak();
     print_stock(stock,size);
     int linenumber;
     printw("What is the line number of the car you want to delete ?\n");
+    refresh();
     scanw("%d",&linenumber);
     for (int i = linenumber - 1; i < size ; i++){
         stock[i] = stock[i+1];
     }
     size = size - 1;
     print_stock(stock,size);
+    endwin();
 }
 void message(){
     printw("===========================================================================================================\n");
@@ -370,6 +403,10 @@ void message(){
     printw("\n");
 }
 int main_manager() {
+    initscr();
+    clear();
+    echo();
+    cbreak();
     int verif=0;
     char tab[4];
     int sizecita = 0;
@@ -400,14 +437,16 @@ int main_manager() {
 
     comeBack :
     printw("Do you have some news cars to comand ?\n");
-    verif=yes_no(tab,verif);
+    verif=yes_no(tab);
     if(verif==1){
        verif=0;
        printw("What type of vehicle do you want to add? (0=Sportive, 1=City-dweller car,2=SUV or enter '9' to go back)\n");
+       refresh();
        verif=scanw("%d",&tempsize);
        while(verif != 1 || tempsize != 0 || tempsize != 2 || tempsize !=1 || tempsize != 9){
         buffer();
         printw("Please enter a correct number, 0 for a Sportive Car, 1 for a City-dweller car or 2 SUV)\n");
+        refresh();
         verif = scanw("%d", &tempsize);
        }
        
@@ -421,6 +460,7 @@ int main_manager() {
         goto comeBack;
       } else {
           printw("Invalid vehicle type.\n");
+          endwin();
           return 1;
     }
     save_stock(stockcita, sizecita, "stockcita.txt");
@@ -429,18 +469,21 @@ int main_manager() {
     }
     else if(verif==-1){
       printw("Error when yes_no\n");
+      endwin();
       return 0;
     }
     printw("Do you have some cars to delete ?\n");
-    verif=yes_no(tab,verif);
+    verif=yes_no(tab);
     if(verif==1){
       printw("What type of car do you want to delete ? (0=Sportive, 1= City Dweller, 2= SUV or enter '9' to go back)\n");
+      refresh();
       verif=scanw("%d",&tempsize);
       while(verif != 1 || tempsize!= 0 || tempsize!= 2||tempsize!=9|| tempsize!=1){
        if (tempsize==9) {
         goto comeBack;
        }
        printw("Please enter a correct number, 0 for a Sportive Car, 1 for a City-dweller car or 2 SUV)\n");
+       refresh();
        verif = scanw("%d", &tempsize);
        }
       if(tempsize==0){
@@ -459,10 +502,14 @@ int main_manager() {
     save_stock(stocksuv, sizesuv, "stocksuv.txt");
     save_stock(stocksport, sizesport, "stocksport.txt");
     
-
+  endwin();
   return 0;
 }
 int main_gp_buyer2() {
+  initscr();
+  clear();
+  noecho();
+  cbreak();
   char filename[50];
   char card[6];
   int category = 0;
@@ -498,13 +545,19 @@ int main_gp_buyer2() {
   Client client;
 
   printw("Hello ! Welcome to CYShopShop !\n");
+  refresh();
   printw("=============================================================\n");
+  refresh();
   printw("Did you already come in our store ? (enter 'yes' or 'no') \n");
-  index = yes_no(answer, verif);
+  refresh();
+  echo();
+  index = yes_no(answer);
+  noecho();
 
   if (index == 1) {
     printw("Do you already have an account ? (enter 'yes' or 'no') \n");
-    index = yes_no(answer, verif);
+    refresh();
+    index = yes_no(answer);
     clearTerminal();
     if (index == 1) {
       printw("OK. Let's start to shop !\n");
@@ -513,7 +566,8 @@ int main_gp_buyer2() {
     } else if (index == 0) {
       printw("Do you want to create an account in our shop ? (enter 'yes' or "
              "'no')\n");
-      index = yes_no(answer, verif);
+      refresh();
+      index = yes_no(answer);
       if (index == 1) {
         createClient(client);
         v=1;
@@ -525,7 +579,8 @@ int main_gp_buyer2() {
   else if (index == 0) {
     printw("Do you want to create an account in our shop ? (enter 'yes' or "
            "'no')\n");
-    index = yes_no(answer, verif);
+    refresh();
+    index = yes_no(answer);
     if (index == 1) {
       createClient(client);
       v=1;
@@ -548,12 +603,14 @@ goback:
     printw("         2. SUV\n");
     printw("         3. City cars\n");
     printw("Your choice : ");
+    refresh();
     verif = scanw("%d", &category);
     if (verif != 1 || (category != 1 && category != 2 && category != 3)) {
       do {
         printw("The selected category is not valid. Please retry.\n");
         buffer();
         printw("  ->  ");
+        refresh();
         verif = scanw("%d", &category);
       } while (verif != 1 || (category != 1 && category != 2 && category != 3));
     } else {
@@ -568,6 +625,7 @@ goback:
       printw("=============================================================\n");
       printw("Which car do you want to buy ? (enter the reference of the car that you want or enter '0' to come back to the menu)\n");
       printw("  ->  ");
+      refresh();
       verif = scanw("%d", &reference);
       if (verif == 1 && reference >= 1 && reference <= sizesport) {
       } else if (verif == 1 && reference == 0) {
@@ -577,6 +635,7 @@ goback:
         do {
           printw("Please enter a valid number.\n");
           buffer();
+          refresh();
           verif = scanw("%d", &reference);
           printw("  ->  ");
         } while (verif != 1 || reference < 1 || reference > sizesport);
@@ -598,6 +657,7 @@ goback:
       printw("=============================================================\n");
       printw("Which car do you want to buy ? (enter the reference of the car that you want or enter '0' to come back to menu)\n");
       printw("  ->  ");
+      refresh();
       verif = scanw("%d", &reference);
       if (verif == 1 && reference >= 101 && reference <= sizesuv + 100) {
       } else if (verif == 1 && reference == 0) {
@@ -607,6 +667,7 @@ goback:
         do {
           printw("Please enter a valid number.\n");
           buffer();
+          refresh();
           verif = scanw("%d", &reference);
           printw("  ->  ");
         } while (verif != 1 || reference < 101 || reference > sizesuv + 100);
@@ -623,6 +684,7 @@ goback:
       printw("=============================================================\n");
       printw("Which car do you want to buy ? (enter the reference of the car that you want or enter '0' to come back to menu)\n");
       printw("  ->  ");
+      refresh();
       verif = scanw("%d", &reference);
       if (verif == 1 && reference >= 201 && reference <= sizecita + 200) {
       } else if (verif == 1 && reference == 0) {
@@ -632,6 +694,7 @@ goback:
         do {
           printw("Please enter a valid number.\n");
           buffer();
+          refresh();
           verif = scanw("%d", &reference);
           printw("  ->  ");
         } while (verif != 1 || reference < 201 ||
@@ -647,11 +710,13 @@ goback:
 
     printw("Do you want to continue your shopping ? (enter 'yes' or 'no')\n");
     printw("  ->  ");
+    refresh();
     scanw("%s", answer);
     convertMin(answer);
     while (strcmp(answer, "yes") != 0 && strcmp(answer, "no") != 0) {
       printw("Please don't play and enter a correct answer...\n");
       printw("  ->  ");
+      refresh();
       scanw("%s", answer);
     }
     clearTerminal();
@@ -679,6 +744,7 @@ goback:
   if (cart != 0) {
     printw("Please enter your card number. (it's for a friend) \n");
     printw("  ->  ");
+    refresh();
     verif = scanw("%s",card);
     buffer();
     if ((strlen(card) == 4) && (testInt(card) == 1)){
@@ -687,19 +753,22 @@ goback:
       do {
         printw("Your datas are safe with us please enter your number card.\n");
         printw("  ->  ");
+        refresh();
         verif = scanw("%s",card);
         buffer();
       } while ((strlen (card) != 4) || (testInt(card) == 0));
     }
       // conclusion
       printw("Have you been pleased with our services? (enter 'yes' or 'no')\n");
-  index = yes_no(answer,verif);
+  refresh();
+  index = yes_no(answer);
   if (index == 1){
     if (v==1){
     }
     else{
       printw("Do you want an account in CYShopShop now ? (enter 'yes' or 'no')\n");
-      index = yes_no(answer,verif);
+      refresh();
+      index = yes_no(answer);
       if (index == 1){
         createClient(client);
         v=1;
@@ -717,7 +786,8 @@ goback:
     if (v==1){
       clearTerminal();
       printw("Do you want to delete your CYShopShop account ( please give us a chance ;( ) (enter 'yes' or 'no')\n");
-      index = yes_no(answer,verif);
+      refresh();
+      index = yes_no(answer);
       if (index == 1){
         printw("So, your account will be deleted...\n");
         //fonction pour supprimer le compte client
@@ -733,6 +803,7 @@ goback:
   } else {
     printw("So we hope you will come back soon ! Bye bye !\n");
   }
+  endwin();
   return 0;
 }
 int main_del(){
