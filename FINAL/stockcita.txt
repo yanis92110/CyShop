@@ -3,12 +3,54 @@ Model: Clio
 Reference: 201
 Price: 20000.00
 Size: 2
-Quantity: 2
+Quantity: 5
 
 Brand: Peugeot
 Model: 208
 Reference: 202
 Price: 22000.00
+Size: 2
+Quantity: 7
+
+Brand: Ford
+Model: Puma
+Reference: 203
+Price: 24000.00
+Size: 2
+Quantity: 6
+
+Brand: Peugeot
+Model: 206
+Reference: 204
+Price: 4000.00
+Size: 2
+Quantity: 1
+
+Brand: Peugeot
+Model: 106
+Reference: 205
+Price: 900.00
+Size: 2
+Quantity: 1
+
+Brand: Honda
+Model: Civic
+Reference: 206
+Price: 15000.00
+Size: 2
+Quantity: 8
+
+Brand: Mazda
+Model: MX-5
+Reference: 207
+Price: 28000.00
+Size: 2
+Quantity: 3
+
+Brand: Mercedes
+Model: W500
+Reference: 208
+Price: 45000.00
 Size: 2
 Quantity: 2
 
