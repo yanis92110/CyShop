@@ -11,4 +11,4 @@
 Téléchargez sur votre machine le programme en dossier compressé (.ZIP) et décompresser le. Lancez un invité de commandes dans le dossier décompressé, verifiez que vous êtes bien dans le dossier contenant les fichiers, éxécutez la commande 'make' puis './main' et le programme se lançera.
 
 * Sur GitHub
-Ouvrez
+Cliquez sur le bouton vert "use this template" en haut à droite puis cliquez sur "Open in codespace". Un codespace se lançera, entrer dans le terminal la commande 'make' puis la commande './main' pour lancer le programme.
