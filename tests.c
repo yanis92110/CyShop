@@ -126,7 +126,6 @@ void showCars(Car* cars, int numCars) {
 
 void print_stock( Car* stock, int size) {
   //Pareil qu'au dessus, A VERIFIER
-    printf("REF || BRAND || MODEL || CATEGORY || PRICE   \n");
     printf("=============================================================\n");
     for (int i = 0; i < size; i++) {
         printf("Product: %-4s %-s | Size: %-2d | Reference: %-2d | Quantity: %-2d | Price: %-4.2f $\n", stock[i].brand, stock[i].model, stock[i].size, stock[i].reference, stock[i].quantity, stock[i].price);
