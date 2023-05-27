@@ -3,7 +3,7 @@ Model: R8
 Reference: 1
 Price: 150000.00
 Size: 1
-Quantity: 7
+Quantity: 6
 
 Brand: BMW
 Model: M4
@@ -43,7 +43,7 @@ Quantity: 4
 Brand: Bugatti
 Model: Chiron
 Reference: 7
-Price: 5000000.00
+Price: 1090000.00
 Size: 1
 Quantity: 1
 

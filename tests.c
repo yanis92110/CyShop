@@ -108,30 +108,31 @@ void createClient(Client client) {
   
 }
 
-int yes_no(char* answer,int verif) {
-
-    printf("Enter 'yes' or 'no': \n");
-    printf("  ->  ");
-    
-    verif = scanf("%s", answer);
-    
-
-    convertMin(answer);
-
-    if (verif == 1 && (strcmp(answer, "yes") == 0 || strcmp(answer, "no") == 0)) {
-    } 
-    else {
-        do {
-            printf("Please, answer us correctly... (enter 'yes' or 'no') \n");
-            printf("  ->  ");
-            
-            verif = scanf("%s", answer);
-            convertMin(answer);
-            
-        } while (verif != 1 || (strcmp(answer, "yes") != 0 && strcmp(answer, "no") != 0));
-
-        return strcmp(answer, "yes") == 0 ? 1 : 0;
-    }
+int yes_no(char* answer,int verif){
+  //Fonction qui demande a l'utilisateur de repondre oui ou non, renvoie 1 si la reponse est oui et renvoie 0 si la reponse est non
+  printf("Enter 'yes' or 'no': \n");
+  printf("  ->  ");
+  verif = scanf("%s",answer);
+  buffer();
+  convertMin(answer);
+  if (verif == 1 && (strcmp(answer,"yes") == 0  || (strcmp(answer,"no") == 0))){
+  //Si la chaine entrée est bien stockée dans la variable answer et qu'elle est égale a yes ou no
+  }
+  else {
+    //Si non
+    do {
+      printf("Please, answer us correctly... (enter 'yes' or 'no') \n");
+      printf("  ->  ");
+      verif = scanf("%s",answer);
+      buffer();
+    } while (verif != 1 || (strcmp(answer,"yes") != 0 && strcmp(answer,"no") != 0));
+  }
+  if (strcmp(answer,"yes") == 0){
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 void showCars(Car* cars, int numCars) {
   //Fonction quk affiche les voitures du stock
@@ -335,6 +336,7 @@ void new_car(Car* stock, int* size, int tempsize) {
     }
 
     printf("Car(s) added to the stock.\n");
+    printf("\n");
     
 }
 
@@ -366,21 +368,21 @@ void printCurrentDate() {
     // Affichage de la date
     printf("Today's date is: %s\n", buffer);
 }
-void delete_car(Car* stock, int size, const char* stocktxt){
-    
-    
-    
-    
-    print_stock(stock,size);
+void delete_car(Car* stock, int* size, const char* stocktxt){
+    printf("\n");
+    print_stock(stock,*size);
+    printf("\n");
     int linenumber;
     printf("What is the line number of the car you want to delete ?\n");
     
     scanf("%d",&linenumber);
-    for (int i = linenumber - 1; i < size ; i++){
+    for (int i = linenumber - 1; i < *size ; i++){
         stock[i] = stock[i+1];
     }
-    size = size - 1;
-    print_stock(stock,size);
+    *size = *size - 1;
+    printf("\n");
+    print_stock(stock,*size);
+    printf("\n");
     
 }
 void message(){
@@ -409,12 +411,14 @@ int main_manager() {
     int size0 = 0;
     int tempsize = 0;
     Car stockcita[MAX_STOCK_SIZE];
-    Car stock0[MAX_STOCK_SIZE];
     Car stocksuv[MAX_STOCK_SIZE];
     Car stocksport[MAX_STOCK_SIZE];
+    //Car tsportstock[MAX_STOCK_SIZE];
+    //Car tsuvstock[MAX_STOCK_SIZE];
+    //Car tcitastock[MAX_STOCK_SIZE];
+    Car tstock[MAX_TAB];
     clearTerminal();
     load_stock(stockcita, &sizecita, "stockcita.txt");
-    load_stock(stock0, &size0, "stock0.txt");
     load_stock(stocksuv, &sizesuv, "stocksuv.txt");
     load_stock(stocksport, &sizesport, "stocksport.txt");
     printf("Hey, here is the today's stock !\n");
@@ -431,9 +435,24 @@ int main_manager() {
     printf("\n");
     print_stock(stocksuv,sizesuv);
     printf("\n");
-    printf("Out of stock: \n");
-    print_stock(stock0, size0);
-
+    printf("5 cars with the lowest quantity: \n");
+    printf("\n");
+    int da = 0;
+    int mien = 0;
+    int tsize = sizesport + sizesuv + sizecita;
+    for(int o = 0; o < sizesport; o++){
+       tstock[o] = stocksport[o];
+    }
+    for(int j = sizesport; j < sizesport + sizesuv; j++){
+       tstock[j] = stocksuv[da];
+       da++;
+    }
+    for(int k = sizesport + sizesuv; k < tsize; k++){
+       tstock[k] = stockcita[mien];
+       mien++;
+    }
+    tri5(tstock, tsize);
+    printf("\n");
     comeBack :
     printf("Do you have some news cars to comand ?\n");
     verif=yes_no(tab,verif);
@@ -441,7 +460,7 @@ int main_manager() {
        verif=0;
        printf("What type of vehicle do you want to add? (0=Sportive, 1=City-dweller car,2=SUV or enter '9' to go back)\n");
        verif=scanf("%d",&tempsize);
-       while(verif != 1 || tempsize != 0 || tempsize != 2 || tempsize !=1 || tempsize != 9){
+       while(verif != 1 || (tempsize != 0 && tempsize != 2 && tempsize != 1 && tempsize != 9)){
         buffer();
         printf("Please enter a correct number, 0 for a Sportive Car, 1 for a City-dweller car or 2 SUV)\n");
         verif = scanf("%d", &tempsize);
@@ -472,7 +491,7 @@ int main_manager() {
     if(verif==1){
       printf("What type of car do you want to delete ? (0=Sportive, 1= City Dweller, 2= SUV or enter '9' to go back)\n");
       verif=scanf("%d",&tempsize);
-      while(verif != 1 || tempsize!= 0 || tempsize!= 2||tempsize!=9|| tempsize!=1){
+      while(verif != 1 || (tempsize != 0 && tempsize != 2 && tempsize != 1 && tempsize != 9)){
        if (tempsize==9) {
         goto comeBack;
        }
@@ -480,13 +499,13 @@ int main_manager() {
        verif = scanf("%d", &tempsize);
        }
       if(tempsize==0){
-        delete_car(stocksport, sizesport,"stocksport.txt");
+        delete_car(stocksport, &sizesport,"stocksport.txt");
       }
       else if(tempsize==1){
-        delete_car(stockcita, sizecita,"stockcita.txt");
+        delete_car(stockcita, &sizecita,"stockcita.txt");
       }
       else if(tempsize==2){
-        delete_car(stocksuv, sizesuv,"stocksuv.txt");
+        delete_car(stocksuv, &sizesuv,"stocksuv.txt");
       }
 
       
@@ -494,13 +513,17 @@ int main_manager() {
     save_stock(stockcita, sizecita, "stockcita.txt");
     save_stock(stocksuv, sizesuv, "stocksuv.txt");
     save_stock(stocksport, sizesport, "stocksport.txt");
-    save_stock(stock0, size0, "stock0.txt");
     
 
   return 0;
 }
 int main_gp_buyer2() {
-  char filename[50];
+  Client* clients;
+  Client client;
+  Date today;
+
+  int h = 0;
+  char filename[50] = "historics.txt";
   char card[6];
   int category = 0;
   int reference = 0;
@@ -509,12 +532,15 @@ int main_gp_buyer2() {
   float *kart = &cart;
   char answer[5];
   int choice = 0;
+  int tempq = 1;
+  int q = 0;
+  int check,id;
   int i = 0;
-  FILE *file = fopen("historique", "w");
-  Date today;
+  FILE *file = fopen(filename, "r+");
   int r = 0;
-  int count = 0;
+  int count = clientCount("clientCounter.txt");
   int v = 0;
+  int index;
   int sizecita = 0;
   int sizesuv = 0;
   int sizesport = 0;
@@ -523,62 +549,121 @@ int main_gp_buyer2() {
   Car stockcita[MAX_STOCK_SIZE];
   Car stocksuv[MAX_STOCK_SIZE];
   Car stocksport[MAX_STOCK_SIZE];
-    
-  load_stock(stockcita, &sizecita, "stockcita.txt");
   load_stock(stock0, &size0, "stock0.txt");
+  load_stock(stockcita, &sizecita, "stockcita.txt");
   load_stock(stocksuv, &sizesuv, "stocksuv.txt");
   load_stock(stocksport, &sizesport, "stocksport.txt");
+  clientsFileToTab("clients.txt", &clients, &count);
   int tempsize = 0;
-
-  // Nettoyer le terminal
+  
+  
+  today = getDate();
+    // Nettoyer le terminal
   clearTerminal();
-
-  int id = 0;
-  int index;
-  Client client;
-
+  
   printf("Hello ! Welcome to CYShopShop !\n");
   printf("=============================================================\n");
-  printf("Did you already come in our store ? (enter 'yes' or 'no') \n");
+  printf("Did you already come in our store ? \n");
   index = yes_no(answer, verif);
 
   if (index == 1) {
-    printf("Do you already have an account ? (enter 'yes' or 'no') \n");
+    printf("Do you already have an account ? \n");
     index = yes_no(answer, verif);
     clearTerminal();
     if (index == 1) {
-      printf("OK. Let's start to shop !\n");
-      v=1;
-      // vérifier si il y a bien le dossier
-    } else if (index == 0) {
-      printf("Do you want to create an account in our shop ? (enter 'yes' or "
-             "'no')\n");
-      index = yes_no(answer, verif);
-      if (index == 1) {
-        createClient(client);
-        v=1;
-      } else if (index == 0) {
-        printf("No problem. Let's start to shop !\n");
+      printf("Let's check if you're in our datas...\n");
+      sleep(2);
+      printf("Please enter your id. (you had to remember it)\n");
+      printf("  ->  ");
+      verif = scanf("%d",&id);
+      buffer();
+      if (id<0 || verif != 1){
+        do {
+          printf("Please, enter a valid ID.\n");
+          printf("  ->  ");
+          verif = scanf("%d",&id);
+          buffer();
+        } while (id<0 || verif != 1);
       }
-    }
-  } 
-  else if (index == 0) {
-    printf("Do you want to create an account in our shop ? (enter 'yes' or "
-           "'no')\n");
-    index = yes_no(answer, verif);
-    if (index == 1) {
-      createClient(client);
+      check = verif_client(clients, id, count);
+      clearTerminal();
+      if (check == 1){
+        printf("Perfect, we find you !\n");
+        printf("===========================================================\n");
+        printf("Your last buy here were :\n");
+        threeLastBuy(file,id);
+        printf("===========================================================\n");
+        printf("Enter 'ok' when you're ready to start !\n");
+        printf("  ->  ");
+        verif = scanf("%s",answer);
+        convertMin(answer);
+        buffer();
+        if (verif == 1 && strcmp(answer,"ok") == 0){
+        }
+        else {
+          do{
+            printf("Please, stay focused... Enter 'ok' to continue.\n");
+            printf("  ->  ");
+            verif = scanf("%s",answer);
+          } while(verif != 1 || strcmp(answer,"ok") != 0);
+        }
+      }
+      else {
+        printf("Oh... We can't find your datas... Do you want to recreate a new account ?\n");
+        index = yes_no(answer,verif);
+        if (index == 1){
+          createClient(&client,today,count);
+          addClient();
+          printf("Please remember your ID : %d.\n",client.id);
+          sleep(3);
+        }
+        else {
+          h = 1;
+          printf("Well, let's start to shop !\n");
+          sleep(1);
+        }
+      }
       v=1;
     } else if (index == 0) {
       clearTerminal();
-      printf("No problem. Let's start to shop !\n");
+      printf("Do you want to create an account in our shop ? \n");
+      index = yes_no(answer, verif);
+      if (index == 1) {
+        createClient(&client,today,count);
+        addClient();
+        printf("Please remember your ID : %d.\n",client.id);
+        sleep(3);
+        v=1;
+      } else if (index == 0) {
+        h=1;
+        printf("Let's start to shop !\n");
+        sleep(1);
+      }
+    }
+  } else if (index == 0) {
+    clearTerminal();
+    printf("Do you want to create an account in our shop ? \n");
+    index = yes_no(answer, verif);
+    if (index == 1) {
+      createClient(&client,today,count);
+      addClient();
+      printf("Please remember your ID : %d.\n",client.id);
+      sleep(3);
+      v=1;
+    } else if (index == 0) {
+      clearTerminal();
+      h = 1;
+      printf("Let's start to shop !\n");
+      sleep(1);
     }
   }
-
-  clearTerminal();
+clearTerminal();
+clientsFileToTab("clients.txt", &clients, &count);
 goback:
   do {
-    printCurrentDate();
+      // show date and hour
+    printf("Current date : %02d/%02d/%d\n", today.day, today.month, today.year);
+    printf("Current time : %02d:%02d:%02d\n", today.hour, today.minute, today.second);
     printf("=============================================================\n");
     printf("                                                          Cars in "
            "the cart : %d\n",
@@ -623,11 +708,7 @@ goback:
       }
       buffer();
       choice = reference;
-      //demander a elyes
-      fprintf(file, "Date: %d/%d/%d à %d : %d : %d, Car: %s %s , Price: %.2f\n",
-             today.day, today.month, today.year, today.hour, today.minute,
-             today.second, stocksport[choice - 1].brand,
-             stocksport[choice - 1].model, stocksport[choice - 1].price);
+      clearTerminal();
       printf("Congrats ! You're now the proud owner of a %s %s !\n",
              stocksport[choice - 1].brand, stocksport[choice - 1].model);
       cart = cart + stocksport[choice - 1].price;
@@ -643,6 +724,10 @@ goback:
     sizesport = sizesport - 1;
       }
       reference = 0;
+      if (h == 0){
+        addHistoric(choice,today,stocksport,id);
+      }else {
+      }
 
     } else if (category == 2) {
       print_stock(stocksuv, sizesuv);
@@ -664,10 +749,11 @@ goback:
       }
       buffer();
       choice = reference - 100;
+      clearTerminal();
       printf("Congrats ! You're now the proud owner of a %s %s !\n",
              stocksuv[choice - 1].brand, stocksuv[choice - 1].model);
       cart = cart + stocksuv[choice - 1].price;
-       stocksuv[choice - 1].quantity= stocksuv[choice - 1].quantity - 1;
+      stocksuv[choice - 1].quantity= stocksuv[choice - 1].quantity - 1;
       if(stocksuv[choice -1].quantity == 0){
         size0 = size0 + 1;
         for(int k = size0; k < size0 + 1; k++){
@@ -675,10 +761,14 @@ goback:
         }
         for (int i = choice - 1; i < sizesuv ; i++){
         stocksuv[i] = stocksuv[i+1];
-    }
-    sizesuv = sizesuv - 1;
+        }
+        sizesuv = sizesuv - 1;
       }
       reference = 0;
+      if (h == 0){
+              addHistoric(choice,today,stocksuv,id);
+      }else {
+      }
 
     } else if (category == 3) {
       print_stock(stockcita, sizecita);
@@ -701,23 +791,29 @@ goback:
       }
       buffer();
       choice = reference - 200;
+      clearTerminal();
       printf("Congrats ! You're now the proud owner of a %s %s !\n",
              stockcita[choice - 1].brand, stockcita[choice - 1].model);
       cart = cart + stockcita[choice - 1].price;
-       stockcita[choice - 1].quantity= stockcita[choice - 1].quantity - 1;
+      stockcita[choice - 1].quantity= stockcita[choice - 1].quantity - 1;
       if(stockcita[choice -1].quantity == 0){
-        size0 = size0 + 1;
-        for(int k = size0; k < size0 + 1; k++){
+         size0 = size0 + 1;
+         for(int k = size0; k < size0 + 1; k++){
             stockcita[choice - 1] = stock0[k];
         }
         for (int i = choice - 1; i < sizesport ; i++){
         stockcita[i] = stockcita[i+1];
-    }
+        }
     sizecita = sizecita - 1;
       }
       reference = 0;
+      if (h == 0){
+              addHistoric(choice,today,stockcita,id);
+      }
+      else {
+      }
     }
-
+    clearTerminal();
     printf("Do you want to continue your shopping ? (enter 'yes' or 'no')\n");
     printf("  ->  ");
     scanf("%s", answer);
@@ -735,26 +831,12 @@ goback:
   clearTerminal();
   printf("OK ! So you have in your cart %d cars so you will have to pay %.2f $.\n",i, cart);
   printf("=============================================================\n");
-  if(v==1){
-    if(client.points!=0){
-      if(cart-client.points<0){
-        printf("Thanks for being loyal to our services ! Thanks to your fidelity your cart is free ! :O\n");
-        client.points=client.points-cart;
-        cart=0;
-      }
-      else{
-        cart=cart-client.points;
-        printf("Jackpot ! You have %f fidelity points on your account !\n You have a sale of %f$ to your cart!\nYou will now pay %f$",client.points, client.points, cart);
-        client.points=0;
-      }
-    }
-  }
   if (cart != 0) {
-    printf("Please enter your card number. (it's for a friend) \n");
+    printf("Please enter the 4 digits of your card code. (it's for a friend) \n");
     printf("  ->  ");
     verif = scanf("%s",card);
     buffer();
-    if ((strlen(card) == 4) && (testInt(card) == 1)){
+    if ((strlen(card) == 4) && (testAnswer(card) == 1)){
     }
     else{
       do {
@@ -762,55 +844,54 @@ goback:
         printf("  ->  ");
         verif = scanf("%s",card);
         buffer();
-      } while ((strlen (card) != 4) || (testInt(card) == 0));
+      } while ((strlen (card) != 4) || (testAnswer(card) == 0));
     }
     save_stock(stockcita, sizecita, "stockcita.txt");
     save_stock(stocksuv, sizesuv, "stocksuv.txt");
     save_stock(stocksport, sizesport, "stocksport.txt");
     save_stock(stock0, size0, "stock0.txt");
       // conclusion
-      printf("Have you been pleased with our services? (enter 'yes' or 'no')\n");
-  index = yes_no(answer,verif);
-  if (index == 1){
-    if (v==1){
-    }
-    else{
-      printf("Do you want an account in CYShopShop now ? (enter 'yes' or 'no')\n");
-      index = yes_no(answer,verif);
-      if (index == 1){
-        createClient(client);
-        v=1;
-      }
-      else{
-      }
-    }
-  }
-  if(v==1){
-    float sale;
-    sale=cart*0.05;
-    printf("You have %f fidelity points ! 1 fidelity point = 1€\nSo you have a %f sale on your next buy!\n",sale ,sale);
-  }
-  else if (index == 0){
-    if (v==1){
       clearTerminal();
-      printf("Do you want to delete your CYShopShop account ( please give us a chance ;( ) (enter 'yes' or 'no')\n");
+      printf("Have you been pleased with our services? \n");
       index = yes_no(answer,verif);
       if (index == 1){
-        printf("So, your account will be deleted...\n");
-        //fonction pour supprimer le compte client
+      if (v==1){
       }
       else{
-        printf("Thank you my lord ! I promise we'll never disappoint you again !\n");
+        clearTerminal();
+        printf("Do you want an account in CYShopShop now ? \n");
+        index = yes_no(answer,verif);
+        if (index == 1){
+          createClient(&client,today,count);
+          addClient();
+          v=1;
+        }
+        else{
+        }
       }
     }
-  }
-  clearTerminal();
-  
-  printf("Well, glad to hear it and we hope we'll see you soon ;).\n"); 
-  } else {
+    else if (index == 0){
+      if (v==1){
+        clearTerminal();
+        printf("Do you want to delete your CYShopShop account ( please give us a chance ;( ) \n");
+        index = yes_no(answer,verif);
+        if (index == 1){
+          printf("So, your account will be deleted...\n");
+          //fonction pour supprimer le compte du client
+          deleteClient("clients.txt",clients);
+          deletedClientCount("deletedClient.txt");
+        }
+        else{
+          printf("Thank you my lord ! I promise we'll never disappoint you again !\n");
+        }
+      }
+    }
+    clearTerminal();
+    printf("Well, glad to hear it and we hope we'll see you soon ;).\n"); 
+    } else {
     printf("So we hope you will come back soon ! Bye bye !\n");
-  }
-  return 0;
+    }
+    return 0;
 }
 int main_del(){
     int sizecita = 0;
@@ -819,22 +900,22 @@ int main_del(){
     Car stockcita[MAX_STOCK_SIZE];
     Car stocksuv[MAX_STOCK_SIZE];
     Car stocksport[MAX_STOCK_SIZE];
-    //load_stock(stocksuv,&sizesuv, "stocksuv.txt");
-    //delete_car(stocksuv, sizesuv, "stocksuv.txt");
+
     load_stock(stocksport,&sizesport, "stocksport.txt");
     delete_car(stocksport, sizesport, "stocksport.txt");
     return 0;
 }
-void affiche5(Car* stock, int size){
-    Car tstock[MAX_STOCK_SIZE]=stock;
-     for (int i = 0; i < size - 1; i++) {
+void tri5(Car* stock, int size){
+
+    for (int i = 0; i < size - 1; i++) {
         for (int j = 0; j < size - i - 1; j++) {
-            if (tstock[j].quantity > tstock[j + 1].quantity) {
-                Car temp = tstock[j];      //Ã©changer les voitures de place
-                tstock[j] = tstock[j + 1];
-                tstock[j + 1] = temp;
+            if (stock[j].quantity > stock[j + 1].quantity) {
+                Car temp = stock[j];
+                stock[j] = stock[j + 1];
+                stock[j + 1] = temp;
+                
             }
         }
      }
-     print_stock(tstock, 5);
+     print_stock(stock, 5);
 }
