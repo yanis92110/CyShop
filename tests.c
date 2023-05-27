@@ -825,3 +825,16 @@ int main_del(){
     delete_car(stocksport, sizesport, "stocksport.txt");
     return 0;
 }
+void affiche5(Car* stock, int size){
+    Car tstock[MAX_STOCK_SIZE]=stock;
+     for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (tstock[j].quantity > tstock[j + 1].quantity) {
+                Car temp = tstock[j];      //Ã©changer les voitures de place
+                tstock[j] = tstock[j + 1];
+                tstock[j + 1] = temp;
+            }
+        }
+     }
+     print_stock(tstock, 5);
+}

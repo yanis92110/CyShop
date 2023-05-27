@@ -54,7 +54,7 @@ typedef struct{
   int main_manager();
   int main_gp_buyer2();
   int main_del();
-  
+  void affiche5(Car* stock, int size);
   
 
 #endif
