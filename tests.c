@@ -55,55 +55,34 @@ void clearTerminal() {
     while ((c = getchar()) != '\n' && c != EOF) {}
     //Tant que c est différent du caractere de fin
   }
-void createClient(Client client) {
-  //Fonction qui créer un client, son "fichier client" et son historique
-  
-  
-  
-  
-  char filename[50];
+
+void createClient(Client* client, Date date, int count){
+  char filename[30] = "clients.txt";
+  FILE* file = fopen(filename,"a");
 
   clearTerminal();
 
-  printf("Enter your name: \n");
-  
-  scanf("%s", client.name);
+  printf("Enter your name: ");
+  scanf("%s", client->name);
+  buffer();
 
-  clearTerminal();
+  printf("Enter your surname: ");
+  scanf("%s", client->surname);
+  buffer();
 
-  printf("Enter your surname: \n");
-  
-  scanf("%s", client.surname);
+  client->id = count + 1;
 
-  clearTerminal();
-
-  sprintf(filename, "%s_%s.txt", client.name, client.surname);
-  //Change le nom du fichier
-
-  FILE *file = fopen(filename, "w");
   if (file != NULL) {
-    //Si le fichier a correctement été crée et ouvert, écrit les infos du client dans le fichier
-    fprintf(file, "Name: %s\n", client.name);
-    fprintf(file, "Surname: %s\n", client.surname);
-    fprintf(file, "ID: %d\n", client.id);
-    fprintf(file, "Purchase history:\n");
+    fprintf(file, "Account created on: %d/%d/%d at %d:%d:%d\n", date.day, date.month, date.year, date.hour, date.minute, date.second);
+    fprintf(file, "Name: %s\n", client->name);
+    fprintf(file, "Surname: %s\n", client->surname);
+    fprintf(file, "ID: %d\n\n", client->id);
     fclose(file);
-    printf("Client file created: %s\n", filename);
-  } 
-  else {
-    
+    printf("Client added in: %s\n", filename);
+  } else {
     printf("Error creating client file.\n");
   }
-  char filenamehistoric[50];
-  sprintf(filenamehistoric, "%s.%s.historic.txt", client.name, client.surname);
-  FILE* filehistoric=fopen(filenamehistoric,"r");
-  if(filehistoric!=NULL){
-    printf("Historic file was sucessfully created.\n");
-    fclose(filehistoric);
-  }
-  else{
-    printf("Error creating historic file.\n");
-  }
+  sleep(2);
   clearTerminal();
   
 }
@@ -135,7 +114,7 @@ int yes_no(char* answer,int verif){
   }
 }
 void showCars(Car* cars, int numCars) {
-  //Fonction quk affiche les voitures du stock
+  //Fonction qui affiche les voitures du stock
 
   printf("REF || BRAND || MODEL || CATEGORY || PRICE   \n");
   printf("=============================================================\n");
@@ -144,8 +123,11 @@ void showCars(Car* cars, int numCars) {
     printf("%d - %s - %s - %d - %.2f $\n", cars[i].reference, cars[i].brand, cars[i].model, cars[i].size, cars[i].price);
   }
 }
+
 void print_stock( Car* stock, int size) {
   //Pareil qu'au dessus, A VERIFIER
+    printf("REF || BRAND || MODEL || CATEGORY || PRICE   \n");
+    printf("=============================================================\n");
     for (int i = 0; i < size; i++) {
         printf("Product: %-4s %-s | Size: %-2d | Reference: %-2d | Quantity: %-2d | Price: %-4.2f $\n", stock[i].brand, stock[i].model, stock[i].size, stock[i].reference, stock[i].quantity, stock[i].price);
     }
@@ -200,62 +182,48 @@ void load_stock(Car* stock, int* size, const char* stocktxt) {
 }
 void new_car(Car* stock, int* size, int tempsize) {
   //Fonction qui ajoute une nouvelle voiture au stock
-    
-    
-    
-    
     int verif = 0;
     Car a;
 
     printf("Enter the name of the brand: \n");
-    
     verif = scanf("%s", a.brand);
     while (verif !=1){
       printf("Enter the name of the brand: \n");
-      
       verif = scanf("%s", a.brand);
     }
     printf("Enter the name of the model: \n");
-    
     verif=scanf("%s", a.model);
     while (verif !=1){
       printf("Enter the name of the model: \n");
-      
       verif=scanf("%s", a.model);
     }
   if (tempsize == 0){
     //Si le modele entré est une sportive
     printf("Enter the reference of the product: \n");
-    
     verif = scanf("%d", &a.reference);
     while (verif != 1 || a.reference < 1 || a.reference > 99 ) {
         printf("The reference has to be between 1 and 99 inclusive.\n");
         printf("Enter the reference: \n");
-        
         verif = scanf("%d", &a.reference);
     }
     }
     if (tempsize == 2){
     //Si le modele entré est un SUV
     printf("Enter the reference of the product: \n");
-    
     verif = scanf("%d", &a.reference);
     while (verif != 1 || a.reference < 101 || a.reference > 199 ) {
         printf("The reference has to be between 101 and 199 inclusive.\n");
         printf("Enter the reference: \n");
-        
         verif = scanf("%d", &a.reference);
     }
     }
     if (tempsize == 1){
     //Si le modele entré est une voiture de ville
     printf("Enter the reference of the product: \n");
-    
     verif = scanf("%d", &a.reference);
     while (verif != 1 || a.reference < 201 || a.reference > 299 ) {
         printf("The reference has to be between 201 and 299 inclusive.\n");
         printf("Enter the reference: \n");
-        
         verif = scanf("%d", &a.reference);
     }
     }
@@ -263,24 +231,20 @@ void new_car(Car* stock, int* size, int tempsize) {
     verif = 0;
 
     printf("Enter the quantity to add: \n");
-    
     verif = scanf("%d", &a.quantity);
     while (verif != 1 || a.quantity < 1 || a.quantity > 15) {
         printf("The quantity has to be between 1 and 15\n");
         printf("Enter the quantity to add: \n");
-        
         verif = scanf("%d", &a.quantity);
     }
 
     verif = 0;
     
     printf("How much does the car cost?\n");
-    
     verif = scanf("%f", &a.price);
     while (verif != 1 || a.price < 500) {
         printf("Too cheap! The car must cost at least 500€\n");
         printf("How much does the car cost?\n");
-        
         verif = scanf("%f", &a.price);
     }
 
@@ -336,72 +300,8 @@ void new_car(Car* stock, int* size, int tempsize) {
     }
 
     printf("Car(s) added to the stock.\n");
-    printf("\n");
-    
 }
 
-/*
-Car low_stock(Car* cars,int numCars){
-  //fonction qui parcourt le stock et qui affiche les voitures en ruptures et les 5 voitures qui ont le moins de stock, POUR GP MANAGER
-}
-
-void clientHistoric(Client client){
-  //fonction qui cherche les trois derniers achats d'un client dans son historique d'achat
-}
-
-void deleteClient(Client client){
-  //fonction qui supprime le dossier d'un client 
-}*/
-
-void printCurrentDate() {
-    time_t currentTime;
-    struct tm* timeInfo;
-    char buffer[80];
-
-    // Obtention de l'heure actuelle
-    time(&currentTime);
-    timeInfo = localtime(&currentTime);
-
-    // Formatage de la date en anglais
-    strftime(buffer, sizeof(buffer), "%A, %B %d, %Y", timeInfo);
-
-    // Affichage de la date
-    printf("Today's date is: %s\n", buffer);
-}
-void delete_car(Car* stock, int* size, const char* stocktxt){
-    printf("\n");
-    print_stock(stock,*size);
-    printf("\n");
-    int linenumber;
-    printf("What is the line number of the car you want to delete ?\n");
-    
-    scanf("%d",&linenumber);
-    for (int i = linenumber - 1; i < *size ; i++){
-        stock[i] = stock[i+1];
-    }
-    *size = *size - 1;
-    printf("\n");
-    print_stock(stock,*size);
-    printf("\n");
-    
-}
-void message(){
-    printf("===========================================================================================================\n");
-    printf("  /$$$$$$             /$$$$$$\  |$$|                          \n");
-    printf(" /$$__  $$           /$$__  $$| |$$|                          /$$__  $$| $$                          \n");
-    printf("| $$  \\__/ /$$   /$$| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$ | $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$ \n");
-    printf("| $$      | $$  | $$|  $$$$$$ | $$__  $$ /$$__  $$ /$$__  $$|  $$$$$$ | $$__  $$ /$$__  $$ /$$__  $$\n");
-    printf("| $$      | $$  | $$ \\____  $$| $$  \\ $$| $$  \\ $$| $$  \\ $$ \\____  $$| $$  \\ $$| $$  \\ $$| $$  \\ $$\n");
-    printf("| $$    $$| $$  | $$ /$$  \\ $$| $$  | $$| $$  | $$| $$  | $$ /$$  \\ $$| $$  | $$| $$  | $$| $$  | $$\n");
-    printf("|  $$$$$$/|  $$$$$$$|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/\n");
-    printf(" \\______/  \\____  $$ \\______/ |__/  |__/ \\______/ | $$____/  \\______/ |__/  |__/ \\______/ | $$____/ \n");
-    printf("           /$$  | $$                              | $$                                    | $$      \n");
-    printf("          |  $$$$$$/                              | $$                                    | $$      \n");
-    printf("           \\______/                               |__/                                    |__/      \n");
-    printf("===========================================================================================================\n");
-    printf("\n");
-    printf("\n");
-}
 int main_manager() {
     int verif=0;
     char tab[4];
@@ -521,7 +421,6 @@ int main_gp_buyer2() {
   Client* clients;
   Client client;
   Date today;
-
   int h = 0;
   char filename[50] = "historics.txt";
   char card[6];
@@ -893,17 +792,265 @@ goback:
     }
     return 0;
 }
-int main_del(){
-    int sizecita = 0;
-    int sizesuv = 0;
-    int sizesport = 0;
-    Car stockcita[MAX_STOCK_SIZE];
-    Car stocksuv[MAX_STOCK_SIZE];
-    Car stocksport[MAX_STOCK_SIZE];
+void deleteClient(const char* filename, Client *clients) {
+  FILE* file = fopen(filename, "r+");
+  if (file == NULL) {
+    printf("Can't open the file.\n");
+    return;
+  }
 
-    load_stock(stocksport,&sizesport, "stocksport.txt");
-    delete_car(stocksport, sizesport, "stocksport.txt");
+  char line[100];
+  long int currentPosition = ftell(file);
+  while (fgets(line, sizeof(line), file) != NULL) {
+    if (strstr(line, "ID: ") != NULL) {
+      int currentID;
+      sscanf(line, "ID: %d", &currentID);
+      if (currentID == clients->id) {
+        fseek(file, currentPosition, SEEK_SET);
+        fprintf(file, "ID: -1\n");
+        fprintf(file, "\n");
+        break;
+      }
+    }
+    currentPosition = ftell(file);
+  }
+
+  fclose(file);
+  printf("Your account has been deleted... Ciao !\n");
+}
+void printCurrentDate() {
+    time_t currentTime;
+    struct tm* timeInfo;
+    char buffer[80];
+
+    // Obtention de l'heure actuelle
+    time(&currentTime);
+    timeInfo = localtime(&currentTime);
+
+    // Formatage de la date en anglais
+    strftime(buffer, sizeof(buffer), "%A, %B %d, %Y", timeInfo);
+
+    // Affichage de la date
+    printf("Today's date is: %s\n", buffer);
+}
+void delete_car(Car* stock, int* size, const char* stocktxt){
+    print_stock(stock,size);
+    int linenumber;
+    printf("What is the line number of the car you want to delete ?\n");
+    scanf("%d",&linenumber);
+    for (int i = linenumber - 1; i < size ; i++){
+        stock[i] = stock[i+1];
+    }
+    size = size - 1;
+    print_stock(stock,size);
+}
+
+int clientCount(const char* namefile) {
+    FILE *file = fopen(namefile, "r");
+    if (file == NULL) {
+        printf("Can't open the file.\n");
+        return -1;
+    }
+
+    int count = 0;
+    int chara;
+
+    while ((chara = fgetc(file)) != EOF) {
+        if (chara == '*') {
+            count++;
+        }
+    }
+
+    fclose(file);
+    return count;
+}
+
+int deletedClientCount(const char* namefile) {
+    FILE *file = fopen(namefile, "r");
+    if (file == NULL) {
+        printf("Can't open the file.\n");
+        return -1;
+    }
+
+    int count = 0;
+    int chara;
+
+    while ((chara = fgetc(file)) != EOF) {
+        if (chara == '%') {
+            count++;
+        }
+    }
+
+    fclose(file);
+    return count;
+}
+
+Date getDate() {
+  Date date;
+  
+  // def france UTC 
+  const int delay = 2;
+
+  // get current hour
+  time_t now = time(NULL);
+  struct tm *currentDate = gmtime(&now);
+
+  // add UTC+2 to get hour in france
+  currentDate->tm_hour += delay;
+  mktime(currentDate);
+
+  // divide the date 
+  date.day = currentDate->tm_mday;
+  date.month = currentDate->tm_mon + 1; 
+  date.year = currentDate->tm_year + 1900; // year start at 1900
+
+  // divide the hour
+  date.hour = currentDate->tm_hour;
+  date.minute = currentDate->tm_min;
+  date.second = currentDate->tm_sec;
+
+
+  return date;
+}
+
+void moveToLine(int lineNumber, FILE* file){
+  rewind(file);  
+  int currentLine = 1;
+  char ch;
+
+  while (currentLine < lineNumber) {
+    ch = fgetc(file);
+    if (ch == '\n') {
+        currentLine++;
+    }
+  }
+}
+
+void threeLastBuy(FILE* file, int id) {
+  char ch;
+  moveToLine(id,file);
+  for (int i=0;i<3;i++){
+    while ((ch = fgetc(file)) != '|') {
+        if (ch == '\n' || ch == EOF) {
+            break;  
+        }
+
+        printf("%c", ch);
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
+
+int addClient() {
+    FILE *file = fopen("clientCounter.txt", "a");
+    if (file == NULL) {
+        printf("Can't open the file.\n");
+        return 1;
+    }
+
+    fputc('*', file);
+
+    fclose(file);
     return 0;
+}
+
+void toLower(char *word) {
+  int i = 0;
+  while (word[i] != '\0') {
+    word[i] = tolower(word[i]);
+    i++;
+  }
+}
+
+int testAnswer(const char* tab){
+  int i = 0;
+  while(tab[i] != '\0'){
+    if ((tab[i] < '0') || (tab[i] > '9')){
+      return 0;
+    }
+    i++;
+  }
+  return 1;
+}
+
+void clientsFileToTab(const char* filename, Client** clients, int* numClients) {
+  FILE* file = fopen(filename, "r");
+  if (file == NULL) {
+    printf("Can't open the file.\n");
+    return;
+  }
+
+  // Compter le nombre de clients dans le fichier
+  int count = 0;
+  char line[100];
+  while (fgets(line, sizeof(line), file) != NULL) {
+    if (strstr(line, "Name:") != NULL) {
+      count++;
+    }
+  }
+
+  // Allouer de la mémoire pour le tableau de clients
+  *clients = (Client*)malloc(count * sizeof(Client));
+  *numClients = count;
+
+  // Lire les informations des clients à partir du fichier
+  rewind(file);
+  int index = 0;
+  Client* currentClient = *clients;
+  while (fgets(line, sizeof(line), file) != NULL) {
+    if (strstr(line, "Name:") != NULL) {
+      sscanf(line, "Name: %s", currentClient->name);
+      fgets(line, sizeof(line), file); // Sauter la ligne "Surname: "
+      sscanf(line, "Surname: %s", currentClient->surname);
+      fgets(line, sizeof(line), file); // Sauter la ligne "ID: "
+      sscanf(line, "ID: %d", &(currentClient->id));
+      currentClient++;
+      index++;
+    }
+  }
+
+  fclose(file);
+}
+
+int verif_client(Client* clients, int id, int size){
+  int count = 0;
+  for(int i = 0; i < size ; i++){
+    if (clients[i].id == id){
+      count = 1;
+    }
+  }
+  if (count == 1){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
+
+void printClientInfo(const Client* clients, int numClients, int clientID) {
+  for (int i = 0; i < numClients; i++) {
+    printf("Affichage boucle pour cherchert client");
+    if (clients[i].id == clientID) {
+      printf("Here are your informations :\n");
+      printf("Nom : %s\n", clients[i].name);
+      printf("Prénom : %s\n", clients[i].surname);
+      printf("ID : %d\n", clients[i].id);
+      return; // Sortir de la fonction une fois les informations affichées
+    }
+  }
+}
+
+//fonction qui ajoute à l'historique associé au client les voitures qu'il achète
+void addHistoric(int choice, Date date, Car* stock, int id) {
+  char filename[50] = "historics.txt";
+  FILE* file = fopen(filename, "a");
+  if (file == NULL) {
+    printf("Can't open the file.\n");
+  }
+ 
+  
+  fprintf(file, " ->  %d/%d/%d : Bought %s %s for %.2f $ |", date.day, date.month, date.year, stock[choice - 1].brand, stock[choice - 1].model, stock[choice - 1].price );
 }
 void tri5(Car* stock, int size){
 
@@ -918,4 +1065,21 @@ void tri5(Car* stock, int size){
         }
      }
      print_stock(stock, 5);
+}
+void message(){
+    printf("===========================================================================================================\n");
+    printf("  /$$$$$$             /$$$$$$\  |$$|                          \n");
+    printf(" /$$__  $$           /$$__  $$| |$$|                          /$$__  $$| $$                          \n");
+    printf("| $$  \\__/ /$$   /$$| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$ | $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$ \n");
+    printf("| $$      | $$  | $$|  $$$$$$ | $$__  $$ /$$__  $$ /$$__  $$|  $$$$$$ | $$__  $$ /$$__  $$ /$$__  $$\n");
+    printf("| $$      | $$  | $$ \\____  $$| $$  \\ $$| $$  \\ $$| $$  \\ $$ \\____  $$| $$  \\ $$| $$  \\ $$| $$  \\ $$\n");
+    printf("| $$    $$| $$  | $$ /$$  \\ $$| $$  | $$| $$  | $$| $$  | $$ /$$  \\ $$| $$  | $$| $$  | $$| $$  | $$\n");
+    printf("|  $$$$$$/|  $$$$$$$|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/\n");
+    printf(" \\______/  \\____  $$ \\______/ |__/  |__/ \\______/ | $$____/  \\______/ |__/  |__/ \\______/ | $$____/ \n");
+    printf("           /$$  | $$                              | $$                                    | $$      \n");
+    printf("          |  $$$$$$/                              | $$                                    | $$      \n");
+    printf("           \\______/                               |__/                                    |__/      \n");
+    printf("===========================================================================================================\n");
+    printf("\n");
+    printf("\n");
 }
