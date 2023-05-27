@@ -1,5 +1,4 @@
-#include "header.h"
-
+#include "header.h" 
 
 //FICHIER POUR TESTER LES CONDITIONS ET FONCTIONS
 void clearTerminal() {
@@ -33,7 +32,7 @@ void clearTerminal() {
     }
   }
   void printArrayChar(char* tab){
-  //Fonction qui affiche un tableau de caracteres
+  //Fonction qui affiche un tableau de caracteres passé en parametre
     int i=0;
     while(tab[i]!='\0'){
       printf("%c",tab[i]);
@@ -57,6 +56,7 @@ void clearTerminal() {
   }
 
 void createClient(Client* client, Date date, int count){
+ //Fonction qui prend en parametre un tableau de client, une date et un compteur et crée un  //client
   char filename[30] = "clients.txt";
   FILE* file = fopen(filename,"a");
 
@@ -73,6 +73,7 @@ void createClient(Client* client, Date date, int count){
   client->id = count + 1;
 
   if (file != NULL) {
+    //Si le fichier a bien été crée:
     fprintf(file, "Account created on: %d/%d/%d at %d:%d:%d\n", date.day, date.month, date.year, date.hour, date.minute, date.second);
     fprintf(file, "Name: %s\n", client->name);
     fprintf(file, "Surname: %s\n", client->surname);
@@ -88,14 +89,14 @@ void createClient(Client* client, Date date, int count){
 }
 
 int yes_no(char* answer,int verif){
-  //Fonction qui demande a l'utilisateur de repondre oui ou non, renvoie 1 si la reponse est oui et renvoie 0 si la reponse est non
+  //Fonction qui demande a l'utilisateur de répondre oui ou non, renvoie 1 si la reponse est oui et renvoie 0 si la réponse est non
   printf("Enter 'yes' or 'no': \n");
   printf("  ->  ");
   verif = scanf("%s",answer);
   buffer();
   convertMin(answer);
   if (verif == 1 && (strcmp(answer,"yes") == 0  || (strcmp(answer,"no") == 0))){
-  //Si la chaine entrée est bien stockée dans la variable answer et qu'elle est égale a yes ou no
+  //Verifie Si la chaine entrée est bien stockée dans la variable answer et qu'elle est égale a yes ou no
   }
   else {
     //Si non
@@ -104,6 +105,7 @@ int yes_no(char* answer,int verif){
       printf("  ->  ");
       verif = scanf("%s",answer);
       buffer();
+    //Verifie tant que les conditions ne sont pas réalisées
     } while (verif != 1 || (strcmp(answer,"yes") != 0 && strcmp(answer,"no") != 0));
   }
   if (strcmp(answer,"yes") == 0){
@@ -114,7 +116,7 @@ int yes_no(char* answer,int verif){
   }
 }
 void showCars(Car* cars, int numCars) {
-  //Fonction qui affiche les voitures du stock
+  //Fonction qui prend en parametre un tableau de voitures ainsi que sa taille et affiche les voitures du stock
 
   printf("REF || BRAND || MODEL || CATEGORY || PRICE   \n");
   printf("=============================================================\n");
@@ -125,15 +127,14 @@ void showCars(Car* cars, int numCars) {
 }
 
 void print_stock( Car* stock, int size) {
-  //Pareil qu'au dessus, A VERIFIER
-    printf("=============================================================\n");
+  // Affiche le stock , prends en paramètres le stock et le nombre d’éléments du tableau printf("=============================================================\n");
     for (int i = 0; i < size; i++) {
         printf("Product: %-4s %-s | Size: %-2d | Reference: %-2d | Quantity: %-2d | Price: %-4.2f $\n", stock[i].brand, stock[i].model, stock[i].size, stock[i].reference, stock[i].quantity, stock[i].price);
     }
 }
 
 void save_stock( Car* stock, int size, const char* stocktxt) {
-  //Sauvegarde dans un fichier texte le stock de voitures du tableau
+  //Sauvegarde dans un fichier texte passé en parametres le stock de voitures du tableau
     FILE* file = fopen(stocktxt, "w");
 
     if (file == NULL) {
@@ -156,7 +157,7 @@ void save_stock( Car* stock, int size, const char* stocktxt) {
 }
 
 void load_stock(Car* stock, int* size, const char* stocktxt) {
-    //Importe les caracteristiques de chaque voiture depuis le fichier texte et le rentre dans le tableau stock
+    //Importe les caractéristiques de chaque voiture depuis le fichier texte et le rentre dans le tableau stock
     FILE* file = fopen(stocktxt, "r");
 
     if (file == NULL) {
@@ -179,8 +180,10 @@ void load_stock(Car* stock, int* size, const char* stocktxt) {
 
     fclose(file);
 }
+
+
 void new_car(Car* stock, int* size, int tempsize) {
-  //Fonction qui ajoute une nouvelle voiture au stock
+  //Fonction qui ajoute une nouvelle voiture au stock, en fonction de sa catégorie
     int verif = 0;
     Car a;
 
@@ -302,12 +305,12 @@ void new_car(Car* stock, int* size, int tempsize) {
 }
 
 int main_manager() {
+    //Fonction principale du mode gestion
     int verif=0;
     char tab[4];
     int sizecita = 0;
     int sizesuv = 0;
     int sizesport = 0;
-    int size0 = 0;
     int tempsize = 0;
     Car stockcita[MAX_STOCK_SIZE];
     Car stocksuv[MAX_STOCK_SIZE];
@@ -339,18 +342,18 @@ int main_manager() {
     int da = 0;
     int mien = 0;
     int tsize = sizesport + sizesuv + sizecita;
-    for(int o = 0; o < sizesport; o++){
+    for(int o = 0; o < sizesport; o++){  //copie le tableau stocksport dans tstock
        tstock[o] = stocksport[o];
     }
-    for(int j = sizesport; j < sizesport + sizesuv; j++){
+    for(int j = sizesport; j < sizesport + sizesuv; j++){ //copie le tableau stocksuv a la suite dans tstock
        tstock[j] = stocksuv[da];
        da++;
     }
-    for(int k = sizesport + sizesuv; k < tsize; k++){
+    for(int k = sizesport + sizesuv; k < tsize; k++){//copie a la suite le tableau stockcita
        tstock[k] = stockcita[mien];
        mien++;
     }
-    tri5(tstock, tsize);
+    tri5(tstock, tsize);//trie le tableau tstock et affiche les 5 voitures avec le moins de quantité
     printf("\n");
     comeBack :
     printf("Do you have some news cars to comand ?\n");
@@ -365,13 +368,13 @@ int main_manager() {
         verif = scanf("%d", &tempsize);
        }
        
-      if (tempsize == 0) {
+      if (tempsize == 0) {//catégorie sport
           new_car(stocksport, &sizesport, tempsize);
-      } else if (tempsize == 1) {
+      } else if (tempsize == 1) {//catégorie citadine
           new_car(stockcita, &sizecita, tempsize);
-      } else if (tempsize == 2) {
+      } else if (tempsize == 2) {//catégorie suv
           new_car(stocksuv, &sizesuv, tempsize);
-      } else if (tempsize == 9) {
+      } else if (tempsize == 9) {//revenir en arriere
         goto comeBack;
       } else {
           printf("Invalid vehicle type.\n");
@@ -382,6 +385,7 @@ int main_manager() {
     save_stock(stocksport, sizesport, "stocksport.txt");
     }
     else if(verif==-1){
+      //Sécurité si la fonction yes_no ne fonctionne pas, qui ne devrait normalement jamais arriver
       printf("Error when yes_no\n");
       return 0;
     }
@@ -397,13 +401,13 @@ int main_manager() {
        printf("Please enter a correct number, 0 for a Sportive Car, 1 for a City-dweller car or 2 SUV)\n");
        verif = scanf("%d", &tempsize);
        }
-      if(tempsize==0){
+      if(tempsize==0){//catégorie sport
         delete_car(stocksport, &sizesport,"stocksport.txt");
       }
-      else if(tempsize==1){
+      else if(tempsize==1){//catégorie citadine
         delete_car(stockcita, &sizecita,"stockcita.txt");
       }
-      else if(tempsize==2){
+      else if(tempsize==2){//catégorie suv
         delete_car(stocksuv, &sizesuv,"stocksuv.txt");
       }
 
@@ -417,6 +421,7 @@ int main_manager() {
   return 0;
 }
 int main_gp_buyer2() {
+//Fonction principale du mode acheteur
   Client* clients;
   Client client;
   Date today;
@@ -442,12 +447,9 @@ int main_gp_buyer2() {
   int sizecita = 0;
   int sizesuv = 0;
   int sizesport = 0;
-  int size0;
-  Car stock0[MAX_STOCK_SIZE];
   Car stockcita[MAX_STOCK_SIZE];
   Car stocksuv[MAX_STOCK_SIZE];
   Car stocksport[MAX_STOCK_SIZE];
-  load_stock(stock0, &size0, "stock0.txt");
   load_stock(stockcita, &sizecita, "stockcita.txt");
   load_stock(stocksuv, &sizesuv, "stocksuv.txt");
   load_stock(stocksport, &sizesport, "stocksport.txt");
@@ -465,14 +467,17 @@ int main_gp_buyer2() {
   index = yes_no(answer, verif);
 
   if (index == 1) {
+    //Si l’acheteur est deja venu dans le magasin, demander si il a deja un compte
     printf("Do you already have an account ? \n");
     index = yes_no(answer, verif);
     clearTerminal();
     if (index == 1) {
+      //Si il en a un, verifier
       printf("Let's check if you're in our datas...\n");
       sleep(2);
       printf("Please enter your id. (you had to remember it)\n");
       printf("  ->  ");
+      //Le client rentre son id qui va pouvoir retrouver ses informations
       verif = scanf("%d",&id);
       buffer();
       if (id<0 || verif != 1){
@@ -483,6 +488,7 @@ int main_gp_buyer2() {
           buffer();
         } while (id<0 || verif != 1);
       }
+      //Verifie si le client est dans la base de donnee
       check = verif_client(clients, id, count);
       clearTerminal();
       if (check == 1){
@@ -507,6 +513,7 @@ int main_gp_buyer2() {
         }
       }
       else {
+        //Si le client n’est pas trouvé dans la base de données:
         printf("Oh... We can't find your datas... Do you want to recreate a new account ?\n");
         index = yes_no(answer,verif);
         if (index == 1){
@@ -572,6 +579,7 @@ goback:
     printf("         3. City cars\n");
     printf("Your choice : ");
     verif = scanf("%d", &category);
+    //Le client doit rentrer une catégorie de voiture valide
     if (verif != 1 || (category != 1 && category != 2 && category != 3)) {
       do {
         printf("The selected category is not valid. Please retry.\n");
@@ -612,10 +620,6 @@ goback:
       cart = cart + stocksport[choice - 1].price;
       stocksport[choice - 1].quantity= stocksport[choice - 1].quantity - 1;
       if(stocksport[choice -1].quantity == 0){
-        size0 = size0 + 1;
-        for(int k = size0; k < size0 + 1; k++){
-            stocksport[choice - 1] = stock0[k];
-        }
         for (int i = choice - 1; i < sizesport ; i++){
         stocksport[i] = stocksport[i+1];
     }
@@ -653,10 +657,6 @@ goback:
       cart = cart + stocksuv[choice - 1].price;
       stocksuv[choice - 1].quantity= stocksuv[choice - 1].quantity - 1;
       if(stocksuv[choice -1].quantity == 0){
-        size0 = size0 + 1;
-        for(int k = size0; k < size0 + 1; k++){
-            stocksuv[choice - 1] = stock0[k];
-        }
         for (int i = choice - 1; i < sizesuv ; i++){
         stocksuv[i] = stocksuv[i+1];
         }
@@ -695,10 +695,6 @@ goback:
       cart = cart + stockcita[choice - 1].price;
       stockcita[choice - 1].quantity= stockcita[choice - 1].quantity - 1;
       if(stockcita[choice -1].quantity == 0){
-         size0 = size0 + 1;
-         for(int k = size0; k < size0 + 1; k++){
-            stockcita[choice - 1] = stock0[k];
-        }
         for (int i = choice - 1; i < sizesport ; i++){
         stockcita[i] = stockcita[i+1];
         }
@@ -747,7 +743,6 @@ goback:
     save_stock(stockcita, sizecita, "stockcita.txt");
     save_stock(stocksuv, sizesuv, "stocksuv.txt");
     save_stock(stocksport, sizesport, "stocksport.txt");
-    save_stock(stock0, size0, "stock0.txt");
       // conclusion
       clearTerminal();
       printf("Have you been pleased with our services? \n");
@@ -791,6 +786,8 @@ goback:
     }
     return 0;
 }
+
+//fonction permettant de “supprimer” un client en remplaçant son ID par -1
 void deleteClient(const char* filename, Client *clients) {
   FILE* file = fopen(filename, "r+");
   if (file == NULL) {
@@ -817,6 +814,8 @@ void deleteClient(const char* filename, Client *clients) {
   fclose(file);
   printf("Your account has been deleted... Ciao !\n");
 }
+
+//fonction permettant d’afficher la date actuelle 
 void printCurrentDate() {
     time_t currentTime;
     struct tm* timeInfo;
@@ -826,12 +825,14 @@ void printCurrentDate() {
     time(&currentTime);
     timeInfo = localtime(&currentTime);
 
-    // Formatage de la date en anglais
+   
     strftime(buffer, sizeof(buffer), "%A, %B %d, %Y", timeInfo);
 
     // Affichage de la date
     printf("Today's date is: %s\n", buffer);
 }
+
+//fonction permettant d’enlever un modèle de voiture du stock du magasin
 void delete_car(Car* stock, int* size, const char* stocktxt){
     print_stock(stock,size);
     int linenumber;
@@ -844,6 +845,7 @@ void delete_car(Car* stock, int* size, const char* stocktxt){
     print_stock(stock,size);
 }
 
+//fonction permettant de compter le nombre d’étoile dans un fichier et donc, ici, le nombre total de clients
 int clientCount(const char* namefile) {
     FILE *file = fopen(namefile, "r");
     if (file == NULL) {
@@ -864,6 +866,7 @@ int clientCount(const char* namefile) {
     return count;
 }
 
+//fonction qui permet de compter le nombre de clients supprimés à l’aide d’un tableau texte
 int deletedClientCount(const char* namefile) {
     FILE *file = fopen(namefile, "r");
     if (file == NULL) {
@@ -884,6 +887,8 @@ int deletedClientCount(const char* namefile) {
     return count;
 }
 
+
+//fonction qui obtient la date et l’heure actuelles en prenant comme base la machine 
 Date getDate() {
   Date date;
   
@@ -912,6 +917,7 @@ Date getDate() {
   return date;
 }
 
+//fonction permettant de déplacer le curseur de saisie dans un fichier texte
 void moveToLine(int lineNumber, FILE* file){
   rewind(file);  
   int currentLine = 1;
@@ -925,6 +931,7 @@ void moveToLine(int lineNumber, FILE* file){
   }
 }
 
+//fonction permettant d’afficher à un client ses trois derniers achats dans le magasin
 void threeLastBuy(FILE* file, int id) {
   char ch;
   moveToLine(id,file);
@@ -941,6 +948,7 @@ void threeLastBuy(FILE* file, int id) {
   printf("\n");
 }
 
+//fonction permettant d’ajouter une étoile au fichier texte, contenant le nombre d’étoiles égal au nombre de clients
 int addClient() {
     FILE *file = fopen("clientCounter.txt", "a");
     if (file == NULL) {
@@ -954,6 +962,7 @@ int addClient() {
     return 0;
 }
 
+//fonction permettant de transformer toute chaîne de caractères en son équivalent en minuscule pour permettre à l’utilisateur d’écrire avec des majuscules 
 void toLower(char *word) {
   int i = 0;
   while (word[i] != '\0') {
@@ -962,6 +971,7 @@ void toLower(char *word) {
   }
 }
 
+//fonction permettant de vérifier si une réponse donnée est bien entre 0 et 9 inclus et qui retourne la valeur entrée par l’utilisateur
 int testAnswer(const char* tab){
   int i = 0;
   while(tab[i] != '\0'){
@@ -973,6 +983,7 @@ int testAnswer(const char* tab){
   return 1;
 }
 
+//fonction permettant de de récupérer sous forme de tableau les informations des clients initialement contenues dans un fichier texte
 void clientsFileToTab(const char* filename, Client** clients, int* numClients) {
   FILE* file = fopen(filename, "r");
   if (file == NULL) {
@@ -989,7 +1000,7 @@ void clientsFileToTab(const char* filename, Client** clients, int* numClients) {
     }
   }
 
-  // Allouer de la mémoire pour le tableau de clients
+ 
   *clients = (Client*)malloc(count * sizeof(Client));
   *numClients = count;
 
@@ -1012,6 +1023,7 @@ void clientsFileToTab(const char* filename, Client** clients, int* numClients) {
   fclose(file);
 }
 
+//fonction permettant de vérifier si un client appartient déjà à la base de donneés du magasin grâce à son ID
 int verif_client(Client* clients, int id, int size){
   int count = 0;
   for(int i = 0; i < size ; i++){
@@ -1026,7 +1038,7 @@ int verif_client(Client* clients, int id, int size){
     return 0;
   }
 }
-
+//fonction qui affiche les infos du client
 void printClientInfo(const Client* clients, int numClients, int clientID) {
   for (int i = 0; i < numClients; i++) {
     printf("Affichage boucle pour cherchert client");
@@ -1082,3 +1094,4 @@ void message(){
     printf("\n");
     printf("\n");
 }
+
